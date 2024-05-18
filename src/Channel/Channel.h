@@ -21,7 +21,7 @@ public:
 private:
     MoistureSensor moistureSensor;
     Valve valve;
-    int state; // 0 = passive; 1 = active_sensing; 2 = active_irrigating
+    int state; // 0 = not in time range or in range but wasn't turned-on yet; 1 = off-sensing; 2 = on-irrigating
     int lastReadings[NUM_OF_READINGS];//used to sample a few times to get a reliable average
     int lastIndex;//last index read
     int calcAverageReading();

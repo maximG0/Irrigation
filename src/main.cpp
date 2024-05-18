@@ -19,7 +19,7 @@ int stopTime=DEFAULT_STOP_TIME;
 
 void updateBlynk(){
   Blynk.virtualWrite(V0,map(largePlants.getSensorReading(),WET,DRY,100,0));
-  Blynk.virtualWrite(V2,largePlants.get_state());
+  Blynk.virtualWrite(V2,(largePlants.get_state()==2));
   Blynk.virtualWrite(V4,largePlants.getSensorReading());
 }
 void checkTime(){

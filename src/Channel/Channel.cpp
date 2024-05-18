@@ -30,7 +30,9 @@ void Channel::setCallback(std::function<void()> callback){
 void Channel::updateThreshold(int value){threshold=value;}
 
 void Channel::updateTarget(int value){target=value;}
+
 int Channel::get_state(){return state;}
+
 void Channel::turnOff(){
     state=0;
     valve.close();
@@ -41,7 +43,6 @@ void Channel::irrigate(){
         lastIndex++;
         return;
     }
-    //array is full
     int average=calcAverageReading();
     if(inRange){
         switch (state){
@@ -59,7 +60,7 @@ void Channel::irrigate(){
                 }
                 break;
             case 2:
-                if(average<target){
+                if(average<=target){
                     state=1;
                     valve.close();
                 }
