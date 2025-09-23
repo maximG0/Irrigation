@@ -11,13 +11,28 @@ void Channel::resetReadings(){
 int Channel::getSensorReading(){
     return lastAverageReading;
 }
-
+void Channel::sortReadings(){//ascending
+    for(int j=0;j<NUM_OF_READINGS-1;j++){
+        for(int i=j+1;i<NUM_OF_READINGS;i++){
+            if(lastReadings[j]>lastReadings[i]){
+                int temp=lastReadings[i];
+                lastReadings[i]=lastReadings[j];
+                lastReadings[j]=temp;
+            }
+        }
+    }
+}
 int Channel::calcAverageReading(){
+    sortReadings();
+    int usedReadings=0;
     int avgReading=0;
     for(int i=0;i<NUM_OF_READINGS;i++){
-        avgReading+=lastReadings[i];
+        if(i > NUM_OF_READINGS*0.2 && i < NUM_OF_READINGS*0.8){//filtering out top and bottom outliers
+            avgReading+=lastReadings[i];
+            usedReadings++;
+        }
     }
-    avgReading/=NUM_OF_READINGS;
+    avgReading/=usedReadings;
     lastAverageReading=avgReading;
     resetReadings();
     return avgReading;
@@ -36,6 +51,10 @@ int Channel::get_state(){return state;}
 void Channel::turnOff(){
     state=0;
     valve.close();
+}
+void Channel::manual_irrigate(){
+    state=2;
+    valve.open();
 }
 void Channel::irrigate(){
     if(lastIndex<NUM_OF_READINGS){//gathering readings
@@ -66,9 +85,9 @@ void Channel::irrigate(){
                 }
                 break;
         }
-        readingChangeCallback();
+        //readingChangeCallback();
         return;
     }
     turnOff();
-    readingChangeCallback();
+    //readingChangeCallback();
 }

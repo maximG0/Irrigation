@@ -9,6 +9,7 @@
 #define TARGET_MOISTURE 1250
 #define DEFAULT_START_TIME 25200 //7AM
 #define DEFAULT_STOP_TIME 27000 //7:30
+#define MIN_VALID_TIMESTAMP 1690000000 //around 2023
 
 //esp physical sensors
 #define LARGE_SENSOR_PIN 36
