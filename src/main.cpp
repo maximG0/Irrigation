@@ -148,6 +148,7 @@ void loop() {
   if(app.ready()){
     unsigned long currentTime = millis();
     if (currentTime - lastSendTime >= sendInterval){
+      int moisture = largePlants.getSensorReading();
       lastSendTime = currentTime;
       // Read the state from Firebase RTDB
       rtdb.get(aClient, "/valve1", processData, false, "RTDB_GetValveState");
@@ -156,6 +157,8 @@ void loop() {
       rtdb.get(aClient, "/settings/interval_days", processData, false, "RTDB_GetInterval");
       rtdb.get(aClient, "/settings/time", processData, false, "RTDB_GetTime");
       rtdb.get(aClient, "/last_irrigation/datetime", processData, false, "RTDB_GetLastTime");
+      rtdb.get(aClient, "/settings/threshold", processData, false, "RTDB_GetThreshold");
+      rtdb.set<int>(aClient, "/sensors/sensor1", moisture, processData, "RTDB_Send_Int");
       if(!manual){
         irrigate();
         if(log_manual){
@@ -241,6 +244,10 @@ void processData(AsyncResult &aResult){
     }
     if (aResult.uid() == "RTDB_GetInterval"){
       interval_days = payload.toInt();
+    }
+    if (aResult.uid() == "RTDB_GetThreshold"){
+      moistureThreshold = payload.toInt();
+      largePlants.updateThreshold(moistureThreshold);
     }
     if (aResult.uid() == "RTDB_GetLastTime"){
       if(raw_last_time!=payload){
